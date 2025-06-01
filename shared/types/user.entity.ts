@@ -3,6 +3,7 @@ export type UserEntity = {
 	email: string;
 	password?: string;
 	name: string;
+	isEmailVerified?: boolean;
 	createdAt?: Date;
 	updatedAt?: Date;
 };

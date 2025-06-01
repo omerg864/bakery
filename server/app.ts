@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import hpp from 'hpp';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import { xssClean } from './middlewares/xssClean';
+import { errorHandler } from './middlewares/error.middleware';
 
 checkEnv();
 
@@ -23,5 +24,6 @@ app.use(xssClean);
 // Routes
 
 // Error handler
+app.use(errorHandler);
 
 export default app;
