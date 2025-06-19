@@ -2,6 +2,11 @@ import { getUserById } from '../services/user.service';
 import { NextFunction, Response } from 'express';
 import { AccessTokenPayload, decodeAccessToken } from '../utils/jwt.utils';
 import { RequestWithUser } from '../types/express';
+import {
+	ForbiddenError,
+	NotFoundError,
+	UnauthorizedError,
+} from '../utils/error.utils';
 
 export const authUserMiddleware = async (
 	req: RequestWithUser,
@@ -9,31 +14,31 @@ export const authUserMiddleware = async (
 	next: NextFunction
 ) => {
 	const authHeader = req.headers['authorization'];
-	const token = authHeader && authHeader.split(' ')[1];
+	const authSplit = authHeader ? authHeader.split(' ') : [];
+	if (authSplit.length !== 2 || authSplit[0] !== 'Bearer') {
+		throw new UnauthorizedError('invalid authorization header');
+	}
+	const token = authHeader ? authSplit[1] : null;
 
 	if (!token) {
-		res.status(401);
-		throw new Error('Not authorized, no token');
+		throw new UnauthorizedError('no token');
 	}
 	let decoded: AccessTokenPayload;
 
 	try {
 		decoded = decodeAccessToken(token);
 	} catch (error) {
-		res.status(401);
-		throw new Error('Not authorized, token failed');
+		throw new UnauthorizedError('token expired or invalid');
 	}
 
 	const user = await getUserById(decoded.userId);
 
 	if (!user) {
-		res.status(404);
-		throw new Error('User not found');
+		throw new NotFoundError('User not found');
 	}
 
 	if (!user.isEmailVerified) {
-		res.status(401);
-		throw new Error('User email is not verified');
+		throw new ForbiddenError('User email is not verified');
 	}
 
 	req.user = user;

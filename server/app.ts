@@ -19,7 +19,6 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan(NODE_ENV === 'production' ? 'common' : 'dev'));
 app.use(hpp());
-app.use(ExpressMongoSanitize());
 app.use(xssClean);
 
 // Routes

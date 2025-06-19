@@ -7,7 +7,7 @@
 		"test": "tests"
 	},
 	"scripts": {
-		"dev": "nodemon server.ts",
+		"dev": "nodemon",
 		"start": "node dist/server.js",
 		"build": "tsc"
 	},

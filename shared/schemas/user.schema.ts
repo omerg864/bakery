@@ -6,14 +6,16 @@ import {
 	PLAIN_TEXT_WITH_EMOJI_REGEX,
 } from '../constants/validation.constants';
 import { UserEntity } from '../types/user.entity';
+import { requiredString } from './base.schema';
 
 export const registerSchema: z.ZodType<Partial<UserEntity>> = z
 	.object({
-		email: z.string().trim().email(),
-		password: z.string().regex(PASSWORD_REGEX, PASSWORD_ERROR_MESSAGE),
-		name: z
-			.string()
-			.trim()
+		email: requiredString('Email').email('Invalid email address'),
+		password: requiredString('Password').regex(
+			PASSWORD_REGEX,
+			PASSWORD_ERROR_MESSAGE
+		),
+		name: requiredString('Name')
 			.min(1, 'Name is required')
 			.max(50, 'Name must be less than 50 characters')
 			.regex(
@@ -30,8 +32,8 @@ export const registerSchema: z.ZodType<Partial<UserEntity>> = z
 
 export const loginSchema: z.ZodType<Partial<UserEntity>> = z
 	.object({
-		email: z.string().trim().email(),
-		password: z.string(),
+		email: requiredString('Email').email('Invalid email address'),
+		password: requiredString('Password'),
 	})
 	.strict()
 	.transform((data) => ({
@@ -41,7 +43,7 @@ export const loginSchema: z.ZodType<Partial<UserEntity>> = z
 
 export const googleAuthSchema: z.ZodType<{ code: string }> = z
 	.object({
-		code: z.string().trim().min(1, 'Google auth code is required'),
+		code: requiredString('Google auth code'),
 	})
 	.strict()
 	.transform((data) => ({

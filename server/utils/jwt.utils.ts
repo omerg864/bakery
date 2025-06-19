@@ -14,22 +14,22 @@ export type RefreshTokenPayload = {
 	userId: string;
 };
 
-export const generateRefreshToken = (userId: string): string => {
+export function generateRefreshToken(userId: string): string {
 	const payload: RefreshTokenPayload = { userId };
 	const options = { expiresIn: JWT_REFRESH_EXPIRATION as any };
 	return sign(payload, JWT_REFRESH_SECRET, options);
-};
+}
 
-export const generateAccessToken = (userId: string): string => {
+export function generateAccessToken(userId: string): string {
 	const payload: AccessTokenPayload = { userId };
 	const options = { expiresIn: JWT_ACCESS_EXPIRATION as any };
 	return sign(payload, JWT_ACCESS_SECRET, options);
-};
+}
 
-export const decodeRefreshToken = (token: string): RefreshTokenPayload => {
+export function decodeRefreshToken(token: string): RefreshTokenPayload {
 	return verify(token, JWT_REFRESH_SECRET) as RefreshTokenPayload;
-};
+}
 
-export const decodeAccessToken = (token: string): AccessTokenPayload => {
+export function decodeAccessToken(token: string): AccessTokenPayload {
 	return verify(token, JWT_ACCESS_SECRET) as AccessTokenPayload;
-};
+}
