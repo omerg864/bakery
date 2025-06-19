@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"moduleResolution": "node",
 		"esModuleInterop": true,
-		"strict": true
+		"strict": true,
+		"target": "es6"
 	},
 	"include": ["**/*.ts"]
 }
