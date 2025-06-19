@@ -5,8 +5,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import hpp from 'hpp';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
-import { xssClean } from './middlewares/xssClean';
+import { xssClean } from './middlewares/xssClean.middleware';
 import { errorHandler } from './middlewares/error.middleware';
+import userRoutes from './routes/user.routes';
 
 checkEnv();
 
@@ -22,6 +23,7 @@ app.use(ExpressMongoSanitize());
 app.use(xssClean);
 
 // Routes
+app.use('/api/v1/user', userRoutes);
 
 // Error handler
 app.use(errorHandler);

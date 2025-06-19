@@ -1,38 +1,50 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-import { ZodError } from 'zod';
+import { NextFunction, Request, Response } from 'express';
 import logger from '../config/logger';
 import { NODE_ENV } from '../config/env';
+import { ErrorName, errorStatusMap } from '../utils/error.utils';
 
-export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-	let statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-	let message = 'Internal server error';
+type CustomError = Error & {
+	name: string;
+	message: string;
+	details?: Record<string, string[]>;
+};
 
-	if (err instanceof ZodError) {
-		statusCode = 400;
-		message = 'Validation error';
-		const errors = err.errors.map((e) => ({
-			field: e.path.join('.'),
-			message: e.message,
-		}));
+export type ErrorResponse = {
+	success: boolean;
+	stack?: string;
+	error: {
+		name: string;
+		message: string;
+		details?: Record<string, string[]>;
+	};
+};
 
-		logger.warn(`Validation error on ${req.method} ${req.path}:`, errors);
-		res.status(statusCode).json({ success: false, message, errors });
-		return;
-	}
+export const errorHandler = (
+	err: unknown,
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const error = err as CustomError;
 
-	if (err instanceof Error) {
-		message = err.message;
+	const name = error.name ?? ErrorName.ERROR;
+	const status = errorStatusMap[name as ErrorName] ?? 500;
 
-		if (message.includes('jwt')) {
-			statusCode = 401;
-		}
-
-		logger.error(`[${req.method}] ${req.path} - ${message}`);
-	}
-
-	res.status(statusCode).json({
+	const response: ErrorResponse = {
 		success: false,
-		message,
-		stack: NODE_ENV === 'development' ? (err as Error).stack : undefined,
-	});
+		stack: NODE_ENV === 'development' ? error.stack : undefined,
+		error: {
+			name,
+			message: error.message || 'An error occurred',
+			details: error.details,
+		},
+	};
+
+	logger.error(
+		`[${req.method}] ${req.path} - ${response.error.message}: ${error.stack} \n ${JSON.stringify(
+			error.details
+		)}`
+	);
+
+	res.status(status).json(response);
 };

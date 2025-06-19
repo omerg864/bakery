@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { AccessTokenPayload, decodeAccessToken } from '../utils/jwt.utils';
 import { RequestWithUser } from '../types/express';
 
-export const authMiddleware = async (
+export const authUserMiddleware = async (
 	req: RequestWithUser,
 	res: Response,
 	next: NextFunction
