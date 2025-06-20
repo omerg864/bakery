@@ -4,11 +4,12 @@ import {
 	PASSWORD_REGEX,
 	PLAIN_TEXT_WITH_EMOJI_ERROR_MESSAGE,
 	PLAIN_TEXT_WITH_EMOJI_REGEX,
+	UUID_ERROR_MESSAGE,
+	UUID_REGEX,
 } from '../constants/validation.constants';
-import { UserEntity } from '../types/user.entity';
 import { requiredString } from './base.schema';
 
-export const registerSchema: z.ZodType<Partial<UserEntity>> = z
+export const registerSchema = z
 	.object({
 		email: requiredString('Email').email('Invalid email address'),
 		password: requiredString('Password').regex(
@@ -30,18 +31,41 @@ export const registerSchema: z.ZodType<Partial<UserEntity>> = z
 		password: data.password,
 	}));
 
-export const loginSchema: z.ZodType<Partial<UserEntity>> = z
+export type RegisterSchemaType = z.infer<typeof registerSchema>;
+
+enum DeviceType {
+	MOBILE = 'mobile',
+	DESKTOP = 'desktop',
+	TABLET = 'tablet',
+}
+
+export const loginSchema = z
 	.object({
 		email: requiredString('Email').email('Invalid email address'),
 		password: requiredString('Password'),
+		deviceId: requiredString('Device ID').regex(
+			UUID_REGEX,
+			UUID_ERROR_MESSAGE
+		),
+		deviceType: z.nativeEnum(DeviceType, {
+			errorMap: () => ({ message: 'Invalid device type' }),
+		}),
+		deviceName: requiredString('Device name').regex(
+			PLAIN_TEXT_WITH_EMOJI_REGEX,
+			PLAIN_TEXT_WITH_EMOJI_ERROR_MESSAGE
+		),
 	})
 	.strict()
 	.transform((data) => ({
 		email: data.email.trim().toLowerCase(),
 		password: data.password.trim(),
+		deviceType: data.deviceType,
+		deviceName: data.deviceName.trim(),
 	}));
 
-export const googleAuthSchema: z.ZodType<{ code: string }> = z
+export type LoginSchemaType = z.infer<typeof loginSchema>;
+
+export const googleAuthSchema = z
 	.object({
 		code: requiredString('Google auth code'),
 	})
@@ -49,3 +73,5 @@ export const googleAuthSchema: z.ZodType<{ code: string }> = z
 	.transform((data) => ({
 		code: data.code.trim(),
 	}));
+
+export type GoogleAuthSchemaType = z.infer<typeof googleAuthSchema>;

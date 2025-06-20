@@ -19,4 +19,4 @@ export const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'secret_refr
 export const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'secret_access';
 export const JWT_ACCESS_EXPIRATION = process.env.JWT_ACCESS_EXPIRATION || '15m';
 export const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION || '7d';
-export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+export const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';

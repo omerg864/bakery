@@ -1,6 +1,7 @@
+import { ACCESS_TOKEN_PREFIX } from '@shared/constants/auth.constants';
 import { getUserById } from '../services/user.service';
 import { NextFunction, Response } from 'express';
-import { AccessTokenPayload, decodeAccessToken } from '../utils/jwt.utils';
+import { AccessTokenPayload, verifyAccessToken } from '../utils/jwt.utils';
 import { RequestWithUser } from '../types/express';
 import {
 	ForbiddenError,
@@ -15,7 +16,7 @@ export const authUserMiddleware = async (
 ) => {
 	const authHeader = req.headers['authorization'];
 	const authSplit = authHeader ? authHeader.split(' ') : [];
-	if (authSplit.length !== 2 || authSplit[0] !== 'Bearer') {
+	if (authSplit.length !== 2 || authSplit[0] !== ACCESS_TOKEN_PREFIX) {
 		throw new UnauthorizedError('invalid authorization header');
 	}
 	const token = authHeader ? authSplit[1] : null;
@@ -26,7 +27,7 @@ export const authUserMiddleware = async (
 	let decoded: AccessTokenPayload;
 
 	try {
-		decoded = decodeAccessToken(token);
+		decoded = verifyAccessToken(token);
 	} catch (error) {
 		throw new UnauthorizedError('token expired or invalid');
 	}
