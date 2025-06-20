@@ -20,3 +20,7 @@ export const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'secret_access
 export const JWT_ACCESS_EXPIRATION = process.env.JWT_ACCESS_EXPIRATION || '15m';
 export const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION || '7d';
 export const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+export const EMAIL_SERVICE = process.env.EMAIL_SERVICE || '';
+export const EMAIL_USERNAME = process.env.EMAIL_USERNAME || '';
+export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || '';
+export const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS || '';
