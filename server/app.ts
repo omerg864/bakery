@@ -9,6 +9,8 @@ import { errorHandler } from './middlewares/error.middleware';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.routes';
 import authRoutes from './routes/auth.routes';
+import { SERVER_ROUTES } from '@shared/constants/routes.constants';
+import { generatePath } from '@shared/services/app.shared-service';
 
 checkEnv();
 
@@ -29,8 +31,22 @@ app.use(hpp());
 app.use(xssClean);
 
 // Routes
-app.use('/api/v1/user', userRoutes);
-app.use('/api/v1/auth', authRoutes);
+app.use(
+	generatePath([
+		SERVER_ROUTES.BASE,
+		SERVER_ROUTES.USER.version,
+		SERVER_ROUTES.USER.BASE,
+	]),
+	userRoutes
+);
+app.use(
+	generatePath([
+		SERVER_ROUTES.BASE,
+		SERVER_ROUTES.AUTH.version,
+		SERVER_ROUTES.AUTH.BASE,
+	]),
+	authRoutes
+);
 
 // Error handler
 app.use(errorHandler);

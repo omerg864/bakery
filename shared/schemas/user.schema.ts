@@ -75,3 +75,78 @@ export const googleAuthSchema = z
 	}));
 
 export type GoogleAuthSchemaType = z.infer<typeof googleAuthSchema>;
+
+export const changePasswordSchema = z
+	.object({
+		currentPassword: z.string().optional(),
+		newPassword: requiredString('New password').regex(
+			PASSWORD_REGEX,
+			PASSWORD_ERROR_MESSAGE
+		),
+	})
+	.strict()
+	.transform((data) => ({
+		currentPassword: data.currentPassword?.trim(),
+		newPassword: data.newPassword.trim(),
+	}));
+
+export type ChangePasswordSchemaType = z.infer<typeof changePasswordSchema>;
+
+export const resetPasswordSchema = z
+	.object({
+		resetPasswordToken: requiredString('Reset password token'),
+		newPassword: requiredString('New password').regex(
+			PASSWORD_REGEX,
+			PASSWORD_ERROR_MESSAGE
+		),
+	})
+	.strict()
+	.transform((data) => ({
+		resetPasswordToken: data.resetPasswordToken.trim(),
+		newPassword: data.newPassword.trim(),
+	}));
+
+export type ResetPasswordSchemaType = z.infer<typeof resetPasswordSchema>;
+
+export const sendResetPasswordEmailSchema = z
+	.object({
+		email: requiredString('Email').email('Invalid email address'),
+	})
+	.strict()
+	.transform((data) => ({
+		email: data.email.trim().toLowerCase(),
+	}));
+
+export type SendResetPasswordEmailSchemaType = z.infer<
+	typeof sendResetPasswordEmailSchema
+>;
+
+export const updateUserDataSchema = z
+	.object({
+		name: z
+			.string()
+			.regex(
+				PLAIN_TEXT_WITH_EMOJI_REGEX,
+				PLAIN_TEXT_WITH_EMOJI_ERROR_MESSAGE
+			)
+			.optional(),
+	})
+	.strict()
+	.transform((data) => ({
+		name: data.name?.trim(),
+	}));
+
+export type UpdateUserDataSchemaType = z.infer<typeof updateUserDataSchema>;
+
+export const resendVerificationEmailSchema = z
+	.object({
+		email: requiredString('Email').email('Invalid email address'),
+	})
+	.strict()
+	.transform((data) => ({
+		email: data.email.trim().toLowerCase(),
+	}));
+
+export type ResendVerificationEmailSchemaType = z.infer<
+	typeof resendVerificationEmailSchema
+>;

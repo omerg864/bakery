@@ -23,3 +23,5 @@ export const DEVICE_ID_COOKIE_OPTIONS: CookieOptions = {
 	sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
 	maxAge: DEVICE_ID_TTL_MS,
 };
+
+export const RESET_PASSWORD_TOKEN_EXPIRATION_MS = 4 * 60 * 60 * 1000; // 4 hours

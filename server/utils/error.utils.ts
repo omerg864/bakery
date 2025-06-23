@@ -32,6 +32,13 @@ export class ValidationError extends Error {
 	}
 }
 
+export class ServerError extends Error {
+	override name = ErrorName.INTERNAL_SERVER_ERROR;
+	constructor(message = 'Internal server error') {
+		super(message);
+	}
+}
+
 export const errorStatusMap: Partial<Record<ErrorName, number>> = {
 	[ErrorName.BAD_REQUEST]: 400,
 	[ErrorName.UNAUTHORIZED]: 401,

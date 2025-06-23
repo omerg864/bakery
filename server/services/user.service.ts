@@ -1,3 +1,4 @@
+import { UserEntity } from '@shared/types/user.entity';
 import userModel, { UserEntityDocument } from '../models/user.model';
 
 const getUserById = async (
@@ -15,8 +16,18 @@ const getUserByEmail = async (
 	return user;
 }
 
+export const getUserByResetPasswordToken = async (
+	token: string
+): Promise<UserEntityDocument | null> => {
+	const user = await userModel.findOne({
+		resetPasswordToken: token,
+		resetPasswordExpires: { $gt: new Date() },
+	});
+	return user;
+};
+
 const createUser = async (
-	userData: Partial<UserEntityDocument>
+	userData: Partial<UserEntity>
 ): Promise<UserEntityDocument> => {
 	const user = new userModel(userData);
 	await user.save();
@@ -25,7 +36,7 @@ const createUser = async (
 
 const updateUser = async (
 	userId: string,
-	userData: Partial<UserEntityDocument>
+	userData: Omit<Partial<UserEntityDocument>, 'id'>
 ): Promise<UserEntityDocument | null> => {
 	const user = await userModel.findByIdAndUpdate(
 		userId,
