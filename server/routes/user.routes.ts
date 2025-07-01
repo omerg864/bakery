@@ -16,7 +16,7 @@ import {
 	resetPasswordSchema,
 	sendResetPasswordEmailSchema,
 	updateUserDataSchema,
-} from '@shared/schemas/user.schema';
+} from '@shared/schemas/userSchemas/userRequests.schema';
 import { SERVER_ROUTES } from '@shared/constants/routes.constants';
 import { generatePath } from '@shared/services/app.shared-service';
 

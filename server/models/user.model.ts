@@ -1,14 +1,20 @@
 import { UserEntity } from '@shared/types/user.entity';
 import { Document, model, Schema } from 'mongoose';
 import { EntityFunctions } from '../types/entity';
+import { BRAND } from 'zod';
 
 export type UserEntityDocumentData = {
 	resetPasswordToken?: string;
 	resetPasswordExpires?: Date;
 };
+
+type UserEntityPreview = Pick<
+	UserEntity,
+	'id' | 'name' | 'email'
+>;
 export interface UserEntityDocument
 	extends UserEntity,
-		EntityFunctions<UserEntity>,
+		EntityFunctions<UserEntity, 'id' | 'name' | 'email', { id: string & BRAND<'ObjectId'> }>,
 		UserEntityDocumentData,
 		Omit<Document, 'id'> {}
 
@@ -48,7 +54,8 @@ const userSchema = new Schema<UserEntityDocument>(
 	}
 );
 
-userSchema.methods.getEntity = function (): Partial<UserEntity> {
+userSchema.methods.getEntity = function (): Partial<UserEntity> &
+	UserEntityPreview {
 	return {
 		id: this._id.toString(),
 		name: this.name,

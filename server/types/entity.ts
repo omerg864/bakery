@@ -1,9 +1,8 @@
-
-export type EntityFunctions<T> = {
-    getEntity: () => Partial<T>;
-}
+export type EntityFunctions<T, K extends keyof T = never, E = {}> = {
+	getEntity: () => Partial<T> & Pick<T, K> & E;
+};
 
 export type TimestampsData = {
-    createdAt: Date;
-    updatedAt: Date;
-}
+	createdAt: Date;
+	updatedAt: Date;
+};

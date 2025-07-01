@@ -4,6 +4,8 @@ import { ZodSchema } from 'zod';
 import { ValidationError } from '../utils/error.utils';
 import { flattenZodError, validateObjectIds } from '../utils/zod.utils';
 
+const lowerCaseFields = ['email'];
+
 export const validateBodySchema = (schema: ZodSchema<any>) => {
 	return (req: Request, _res: Response, next: NextFunction) => {
 		const result = schema.safeParse(req.body);
@@ -15,10 +17,31 @@ export const validateBodySchema = (schema: ZodSchema<any>) => {
 
 		validateObjectIds(result.data);
 
+		transformBodyData(result.data);
+
 		req.body = result.data;
 		next();
 	};
 };
+
+function transformBodyData(data: Record<string, any>) {
+	// Example transformation: trim all string fields recursively
+	if (data === undefined && data === null) return;
+	if (Array.isArray(data)) {
+		data.forEach((item) => transformBodyData(item));
+		return;
+	}
+	for (const key in data) {
+		if (typeof data[key] === 'string') {
+			data[key] = data[key].trim();
+			if (key in lowerCaseFields) {
+				data[key] = data[key].toLowerCase();
+			}
+		} else {
+			transformBodyData(data[key]);
+		}
+	}
+}
 
 export const validateQuerySchema = (schema: ZodSchema<any>) => {
 	return (req: Request, _res: Response, next: NextFunction) => {

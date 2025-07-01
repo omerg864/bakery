@@ -17,7 +17,7 @@ export const sendEmailTemplate = async <T extends EmailSubjects>(
 	params: TemplateParamsMap[T]
 ): Promise<boolean> => {
 	const template = await fs.readFile(
-		EMAIL_SUBJECT_TEMPLATES[subject],
+		`../templates/${EMAIL_SUBJECT_TEMPLATES[subject]}`,
 		'utf8'
 	);
 	const html = ejs.render(template, params);

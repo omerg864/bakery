@@ -4,10 +4,10 @@ import {
 	ResetPasswordSchemaType,
 	SendResetPasswordEmailSchemaType,
 	UpdateUserDataSchemaType,
-} from '@shared/schemas/user.schema';
+	RegisterSchemaType
+} from '@shared/schemas/userSchemas/userRequests.schema';
 import { CLIENT_ROUTES } from '@shared/constants/routes.constants';
 import type { Request, Response } from 'express';
-import { RegisterSchemaType } from '@shared/schemas/user.schema';
 import {
 	createUser,
 	getUserByEmail,

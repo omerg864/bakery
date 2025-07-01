@@ -11,10 +11,14 @@ import userRoutes from './routes/user.routes';
 import authRoutes from './routes/auth.routes';
 import { SERVER_ROUTES } from '@shared/constants/routes.constants';
 import { generatePath } from '@shared/services/app.shared-service';
+import { buildOpenApiDoc } from './config/doc.config';
+import swaggerUi from 'swagger-ui-express';
 
 checkEnv();
 
 const app: Express = express();
+
+const openApiDocument = buildOpenApiDoc();
 
 // Middleware
 app.use(cookieParser());
@@ -31,6 +35,10 @@ app.use(hpp());
 app.use(xssClean);
 
 // Routes
+app.get("/openapi.json", (req, res) => {
+  res.json(openApiDocument);
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 app.use(
 	generatePath([
 		SERVER_ROUTES.BASE,

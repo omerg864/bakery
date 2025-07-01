@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import logger from '../config/logger';
 import { NODE_ENV } from '../config/env';
-import { ErrorName, errorStatusMap } from '../utils/error.utils';
+import { ErrorName, errorStatusMap } from '@shared/constants/error.constants';
 
 type CustomError = Error & {
 	name: string;

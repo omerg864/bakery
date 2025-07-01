@@ -16,7 +16,7 @@ import {
 	generateAccessToken,
 	generateRefreshToken,
 } from '../utils/jwt.utils';
-import { LoginSchemaType } from '@shared/schemas/user.schema';
+import { LoginSchemaType } from '@shared/schemas/authSchemas/authRequests.schema';
 import { getUserByEmail } from '../services/user.service';
 import { compareBcrypt, hashCrypto } from '../utils/encrypt.utils';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../constants/auth.constants';
 import { v4 as uuidv4 } from 'uuid';
 import { isBefore, differenceInMilliseconds, addMilliseconds } from 'date-fns';
+import { LoginResponseSchemaType } from '../../shared/schemas/authSchemas/authResponses.schema';
 
 export const login = async (
 	req: Request<{}, {}, LoginSchemaType>,
@@ -100,7 +101,7 @@ export const login = async (
 		accessToken,
 		message: 'Login successful',
 		user: userDocument.getEntity(),
-	});
+	} satisfies LoginResponseSchemaType);
 };
 
 export const logout = async (req: Request, res: Response) => {
